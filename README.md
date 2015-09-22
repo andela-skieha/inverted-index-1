@@ -1,10 +1,24 @@
 # inverted-index
 
-__Reference:__
+### Reference
+
+Explantion of what an inverted index is can be found with the links below:
 
 [https://www.elastic.co/guide/en/elasticsearch/guide/current/inverted-index.html](https://www.elastic.co/guide/en/elasticsearch/guide/current/inverted-index.html)
 
 [http://nlp.stanford.edu/IR-book/html/htmledition/a-first-take-at-building-an-inverted-index-1.html](http://nlp.stanford.edu/IR-book/html/htmledition/a-first-take-at-building-an-inverted-index-1.html)
+
+### To run the tests
+
+Chrome does not allow loading of other files, in this case the JSON file to be read while viewing an HTML file loaded directly to the browser from a file explorer.You are required to start up a static server.
+
+Enter the following command in your Terminal, to spurn up a static file server using python:
+
+```bash
+$ python -m SimpleHTTPServer 1515
+```
+
+Then open the following link or click: [http://localhost:1515/jasmine/SpecRunner.html](http://localhost:1515/jasmine/SpecRunner.html)
 
 ```
 The MIT License (MIT)

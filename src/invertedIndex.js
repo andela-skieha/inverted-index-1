@@ -1,8 +1,7 @@
-"use strict";
-// var InvertedIndex = function() {}
+'use strict';
 
 var Index = function() {
-  this.notAcceptedCharacters = ["a", "an", "and", "or", "the", "for", "of", "into", "to", "in"];
+  this.notAcceptedCharacters = ['a', 'an', 'and', 'or', 'the', 'for', 'of', 'into', 'to', 'in'];
   this.dictionary = {};
 };
 
@@ -21,55 +20,58 @@ Index.prototype = {
     // Loop through the book extracts
     Array.prototype.forEach.call(bookArray, function(book) {
       // concatenate the book title and text, to get all the words for a proper search
-      var allTextualContent = (book.title + " " + book.text).replace(/(\.|\,|\:|\;)/g, "");
+      var allTextualContent = (book.title + ' ' + book.text).replace(/(\.|\,|\:|\;)/g, '');
 
       // split the concatenated string to get all the words
       var allTheWords = allTextualContent.split(/\s/);
 
       // Loop through them adding them to the dictonary object if they are already existing
       allTheWords.forEach(function(word) {
-        var word = word.toLowerCase(),
-          dict = that.dictionary;
+        var dict = that.dictionary;
+
+        word = word.toLowerCase();
 
         // check to see that it does no exist
-        if (!dict.hasOwnProperty(word) && that.notAcceptedCharacters.indexOf(word) == -1) {
+        if (!dict.hasOwnProperty(word) && that.notAcceptedCharacters.indexOf(word) === -1) {
           // then add it
           dict[word] = [bookObjectPosition];
         }
       });
 
       bookObjectPosition++;
-    })
+    });
   },
-  searchIndex: function(search_terms) {
+  searchIndex: function(searchTerms) {
     var results = [];
 
     if (arguments.length > 1) {
-      // eg. searchIndex("home", "hole", "king", "hobbit"...)
-      search_terms = arguments;
+      // eg. searchIndex('home', 'hole', 'king', 'hobbit'...)
+      searchTerms = arguments;
     } else {
       // If an array was not passed then a single term was passed
-      if (Object.prototype.toString.call(search_terms) !== '[object Array]') {
+      if (Object.prototype.toString.call(searchTerms) !== '[object Array]') {
         // wrap it up to a single value in an array
-        search_terms = [search_terms];
+        searchTerms = [searchTerms];
       }
     }
-    // console.log("Arg", search_terms)
 
     // Now check for the existence of every word in the array
-    for (var x = 0, searchSize = search_terms.length; x < searchSize; x++) {
-      var index = this.findIndex(search_terms[x]);
+    for (var x = 0, searchSize = searchTerms.length; x < searchSize; x++) {
+      var index = this.findIndex(searchTerms[x]);
       results.push(index);
     }
 
-    if (arguments.length == 1 && Array.isArray(arguments[0]) == false) {
+    // If one argument was provided and it is not an array
+    if (arguments.length === 1 && !Array.isArray(arguments[0])) {
       return results[0];
     }
     return results;
   },
   findIndex: function(word) {
-    var dict = this.getIndex(),
-      word = word.toLowerCase();
+    var dict = this.getIndex();
+
+    // require all none numeric/symbolic characters to be lowercased
+    word = word.toLowerCase();
 
     if (dict[word]) {
       return dict[word];
@@ -82,30 +84,35 @@ Index.prototype = {
   readJSONfile: function(filepath, callback) {
     var that = this;
     var xmlhttp = new XMLHttpRequest();
+
     xmlhttp.onreadystatechange = function() {
-      if (xmlhttp.readyState == 4) {
-        if (xmlhttp.status == 200 || window.location.href.indexOf("http") == -1) {
+      if (xmlhttp.readyState === 4) {
+        if (xmlhttp.status === 200 || window.location.href.indexOf('http') === -1) {
           that.jsonContent = JSON.parse(xmlhttp.responseText);
-          // console.log("The JSON Content: ", that.jsonContent);
           callback(that.jsonContent);
         } else {
-          console.error("An error has occured making the request");
+          console.error('An error has occured making the request');
           return false;
         }
       }
-    }
+    };
 
-    xmlhttp.open("GET", filepath, true);
-    xmlhttp.setRequestHeader("Content-Type", "application/json");
+    xmlhttp.open('GET', filepath, true);
+    xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send(null);
-    return this
+    return this;
   },
   then: function(callback) {
     var that = this;
-    if (typeof callback == "function") {
+    if (typeof callback === 'function') {
+
+      /**
+       * Did not change this, please se the explanation here:
+       * https://github.com/kn9ts/inverted-index/commit/5127a8b6b33f0f96d147713bf8e8b19bec842b20#commitcomment-13361319
+       */
       setTimeout(function() {
         callback(that.jsonContent);
       }, 0);
     }
   }
-}
+};
