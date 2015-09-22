@@ -88,7 +88,13 @@ describe('Inverted index curriculum tests', function() {
         timeAfterResults = (window.performance.now() * 1000),
         timeTaken = timeAfterResults - timeNow;
 
+      // were any results returned
       expect(results).toBeDefined();
+      // Since an array of words was passsed, was the response an array of results of every word
+      expect(Array.isArray(results)).toBe(true);
+      // the array length of the results should be equal to the words submitted to be search
+      expect(results.length).toBe(args.length);
+      // did time elapse?
       expect(timeNow).toBeLessThan(timeAfterResults);
       // some time must have to have elapsed, so we must have recorded some timelapse
       expect(timeTaken).toBeGreaterThan(0);
