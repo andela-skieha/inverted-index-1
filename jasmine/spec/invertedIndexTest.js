@@ -84,9 +84,11 @@ describe('Inverted index curriculum tests', function() {
       // reference: http://gent.ilcore.com/2012/06/better-timer-for-javascript.html
       // run the search, and get the time again, to compare and get the difference
       var timeNow = window.performance.now() * 1000,
+        results = invertedIndex.searchIndex(args),
         timeAfterResults = (window.performance.now() * 1000),
         timeTaken = timeAfterResults - timeNow;
 
+      expect(results).toBeDefined();
       expect(timeNow).toBeLessThan(timeAfterResults);
       // some time must have to have elapsed, so we must have recorded some timelapse
       expect(timeTaken).toBeGreaterThan(0);
