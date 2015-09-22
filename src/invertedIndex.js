@@ -6,11 +6,15 @@ var Index = function() {
 };
 
 Index.prototype = {
-  createIndex: function(filepath) {
+  createIndex: function(filepath, callback) {
     var index = this;
     // Read the JSON file get the books and create an index
     return index.readJSONfile(filepath, function(jsonContent) {
       index.populateIndex(jsonContent);
+      // check if the callback is a function
+      if (typeof callback === 'function') {
+        callback(jsonContent);
+      }
     });
   },
   populateIndex: function(bookArray) {
@@ -18,7 +22,7 @@ Index.prototype = {
       bookObjectPosition = 0;
 
     // Loop through the book extracts
-    Array.prototype.forEach.call(bookArray, function(book) {
+    bookArray.forEach(function(book) {
       // concatenate the book title and text, to get all the words for a proper search
       var allTextualContent = (book.title + ' ' + book.text).replace(/(\.|\,|\:|\;)/g, '');
 
@@ -35,6 +39,31 @@ Index.prototype = {
         if (!dict.hasOwnProperty(word) && that.notAcceptedCharacters.indexOf(word) === -1) {
           // then add it
           dict[word] = [bookObjectPosition];
+        }
+        // the word already exists in the dictionary
+        // only confirm it is not one of word conjuctions
+        else if (that.notAcceptedCharacters.indexOf(word) === -1) {
+
+          var bookPositionStored = false;
+
+          // loop through the book array positional reference,
+          // to see if the book already exists in the array
+          dict[word].some(function(bookPos) {
+            // check if this is the same book position, using the currrent book object position
+            if (bookPos === bookObjectPosition) {
+              bookPositionStored = true;
+              // break this loop: http://stackoverflow.com/a/2641374/1709647
+              // This works because "some" array looping function returns true as soon as any of the callbacks,
+              // executed in array order, return true, short-circuiting the execution of the rest.
+              // saving computation power, used to finish a loop even when a result was acquired
+              return bookPositionStored;
+            }
+          });
+
+          // If not, add this book's positional value in the book array
+          if (!bookPositionStored) {
+            dict[word].push(bookObjectPosition);
+          }
         }
       });
 
@@ -101,18 +130,5 @@ Index.prototype = {
     xmlhttp.setRequestHeader('Content-Type', 'application/json');
     xmlhttp.send(null);
     return this;
-  },
-  then: function(callback) {
-    var that = this;
-    if (typeof callback === 'function') {
-
-      /**
-       * Did not change this, please se the explanation here:
-       * https://github.com/kn9ts/inverted-index/commit/5127a8b6b33f0f96d147713bf8e8b19bec842b20#commitcomment-13361319
-       */
-      setTimeout(function() {
-        callback(that.jsonContent);
-      }, 0);
-    }
   }
 };

@@ -20,6 +20,8 @@ $ python -m SimpleHTTPServer 1515
 
 Then open the following link or click: [http://localhost:1515/jasmine/SpecRunner.html](http://localhost:1515/jasmine/SpecRunner.html)
 
+---
+
 ```
 The MIT License (MIT)
 
